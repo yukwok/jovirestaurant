@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "748040518081",
+    "firebase_url": "https://jovirestautant.firebaseio.com",
+    "project_id": "jovirestautant",
+    "storage_bucket": "jovirestautant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748040518081:android:430bcc8e46855e72891740",
+        "android_client_info": {
+          "package_name": "com.billynyk.jovirestaurant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748040518081-osba5u2dlfeu50mdhoq4u2b9j297neps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7GzjY94aZVEmAWYQaqDTzL06Eh-pG8UI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748040518081-osba5u2dlfeu50mdhoq4u2b9j297neps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
