@@ -4,10 +4,19 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jovirestaurant/src/blocs/auth_bloc.dart';
+import 'package:jovirestaurant/src/blocs/product_bloc.dart';
 import 'package:jovirestaurant/src/blocs/vendor_bloc.dart';
+import 'package:jovirestaurant/src/models/product.dart';
 import 'package:jovirestaurant/src/models/vendor.dart';
+import 'package:jovirestaurant/src/styles/base.dart';
 import 'package:jovirestaurant/src/styles/colors.dart';
+import 'package:jovirestaurant/src/styles/text.dart';
+import 'package:jovirestaurant/src/widgets/app_textfield.dart';
+import 'package:jovirestaurant/src/widgets/button.dart';
+import 'package:jovirestaurant/src/widgets/dropdown_button.dart';
+import 'package:jovirestaurant/src/widgets/sliver_scaffold.dart';
 import 'package:provider/provider.dart';
 
 class EditVendor extends StatefulWidget {
@@ -67,11 +76,11 @@ class _EditVendorState extends State<EditVendor> {
         }
 
         //TODO load bloc values
-        Product existingProduct;
+        Vendor existingVendor;
 
-        if (widget.productId != null) {
+        if (widget.vendorId != null) {
           //Edit product
-          existingProduct = snapshot.data;
+          existingVendor = snapshot.data;
           loadValues(productBloc, existingProduct, authBloc.userId);
         } else {
           //Add product
