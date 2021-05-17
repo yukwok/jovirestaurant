@@ -19,6 +19,8 @@ import 'package:jovirestaurant/src/widgets/dropdown_button.dart';
 import 'package:jovirestaurant/src/widgets/sliver_scaffold.dart';
 import 'package:provider/provider.dart';
 
+//edit vendor screen
+
 class EditVendor extends StatefulWidget {
   final String vendorId;
 
