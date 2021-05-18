@@ -26,12 +26,13 @@ class VendorBloc {
 
   //getters
   Future<Vendor> fetchVendor(String userId) => _db.fetchVendor(userId);
+  Stream<bool> get isUploading => _isUploading.stream;
+
   Stream<String> get name => _name.stream.transform(validateName);
   Stream<String> get description => _description.stream.transform(validateName);
   Stream<String> get imageUrl => _imageUrl.stream;
   Stream<bool> get vendorSaved => _vendorSaved.stream;
   Stream<Vendor> get vendor => _vendor.stream;
-  Stream<bool> get isUploading => _isUploading.stream;
 
   //setters
   Function(String) get changeName => _name.sink.add;
@@ -53,12 +54,7 @@ class VendorBloc {
 //Validators
   final validateName =
       StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
-    // print('validateProductName:$productName');
-
-    //no input
     if (name != null) {
-      //correct format
-      //
       if (name.length >= 3 && name.length <= 20) {
         sink.add(name.trim());
       } else {
@@ -73,12 +69,7 @@ class VendorBloc {
 
   final validateDescription = StreamTransformer<String, String>.fromHandlers(
       handleData: (description, sink) {
-    // print('validateProductName:$productName');
-    //
-    // //no input
-
     if (description != null) {
-      //correct format
       if (description.length >= 10 && description.length <= 200) {
         sink.add(description.trim());
       } else {

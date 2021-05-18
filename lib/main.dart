@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jovirestaurant/src/app.dart';
 
 void main() async {
-
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(App());
 }
-
