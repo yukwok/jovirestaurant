@@ -75,16 +75,15 @@ class _EditVendorState extends State<EditVendor> {
           );
         }
 
-        //TODO load bloc values
-        Vendor existingVendor;
+        Vendor vendor = snapshot.data;
 
         if (widget.vendorId != null) {
           //Edit product
-          existingVendor = snapshot.data;
-          loadValues(productBloc, existingProduct, authBloc.userId);
+
+          loadValues(VendorBloc, existingProduct, authBloc.userId);
         } else {
           //Add product
-          loadValues(productBloc, null, authBloc.userId);
+          loadValues(VendorBloc, null, authBloc.userId);
         }
 
         return (Platform.isIOS)
@@ -92,7 +91,7 @@ class _EditVendorState extends State<EditVendor> {
                 navTitle: authBloc.userId, //name of the products?
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  VendorBloc,
                   context,
                   existingProduct,
                 ),
@@ -102,7 +101,7 @@ class _EditVendorState extends State<EditVendor> {
                 navTitle: authBloc.userId,
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  VendorBloc,
                   context,
                   existingProduct,
                 ),
@@ -114,7 +113,7 @@ class _EditVendorState extends State<EditVendor> {
 
   Widget pagebody(
     bool isIOS,
-    ProductBloc productBloc,
+    VendorBloc productBloc,
     BuildContext context,
     Product existingProduct,
   ) {
@@ -244,24 +243,22 @@ class _EditVendorState extends State<EditVendor> {
     ]);
   }
 
-  loadValues(ProductBloc productBloc, Product product, String venderId) {
-    productBloc.changeProduct(product);
-    productBloc.changeVendorId(venderId);
+  loadValues(VendorBloc vendorBloc, Vendor vendor, String venderId) {
+    // vendorBloc.(product);
+    vendorBloc.changeVendorId(venderId);
 
-    if (product != null) {
+    if (vendor != null) {
       //Edit
-      productBloc.changeProductName(product.productName);
-      productBloc.changeUnitType(product.unitType);
-      productBloc.changeAvailableUnits(product.availableUnits.toString());
-      productBloc.changeUnitPrice(product.unitPrice.toString());
-      productBloc.changeImageUrl(product.imageUrl ?? '');
+      vendorBloc.changeName(vendor.name);
+      vendorBloc.changeDescription(vendor.description);
+
+      vendorBloc.changeImageUrl(vendor.imageUrl ?? '');
     } else {
       //Add
-      productBloc.changeUnitType(null);
-      productBloc.changeProductName(null);
-      productBloc.changeAvailableUnits(null);
-      productBloc.changeUnitPrice(null);
-      productBloc.changeImageUrl('');
+      vendorBloc.changeName(null);
+      vendorBloc.changeDescription(null);
+
+      vendorBloc.changeImageUrl('');
     }
   }
 }
