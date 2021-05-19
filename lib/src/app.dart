@@ -31,8 +31,9 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       Provider(create: (context) => authBloc),
-      Provider(create: (context) => productBloc),
+      Provider(create: (context) => customerBloc),
       Provider(create: (context) => vendorBloc),
+      Provider(create: (context) => productBloc),
       FutureProvider(create: (context) => authBloc.isLoggedIn()),
       StreamProvider(create: (context) => firestore.fetchUnitTypes()),
     ], child: PlatformApp());

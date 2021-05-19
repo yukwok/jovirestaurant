@@ -17,28 +17,16 @@ class Landing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var customerBloc = Provider.of<CustomerBloc>(context);
+
     if (Platform.isIOS) {
-      return
-          // Container(   //testing page
-          //   decoration: BoxDecoration(color: AppColors.facebook),
-          //   child: Center(
-          //       child: Text(
-          //     'landing page, ios',
-          //     style: TextStyles.title,
-          //   )),
-          // );
-
-          AppSliverScaffold.cupertinoSliverScaffold(
-        //cupertinoSliverScaffold
-        navTitle: 'Upcoming Markets',
+      return AppSliverScaffold.cupertinoSliverScaffold(
+        navTitle: 'Signature Restaurant',
         pageBody: Scaffold(body: pageBody(context, customerBloc)),
-
-        // pageBody: pageBody(context),
         context: context,
       );
     } else {
       return AppSliverScaffold.materialSliverScaffold(
-        navTitle: 'Upcoming Markets',
+        navTitle: 'Signature Restaurant',
         pageBody: pageBody(context, customerBloc),
         context: context,
       );
@@ -68,8 +56,8 @@ class Landing extends StatelessWidget {
                             BorderRadius.circular(BaseStyles.borderRadius)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child:
-                          Text('VendorPage', style: TextStyles.buttonTextLight),
+                      child: Text('Vendor Page',
+                          style: TextStyles.buttonTextLight),
                     ),
                   ),
                   onTap: () => Navigator.of(context).pushNamed('/vendor'),
