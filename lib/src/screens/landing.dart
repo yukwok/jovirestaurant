@@ -99,12 +99,6 @@ class Landing extends StatelessWidget {
                 );
               }),
         ),
-
-        // AppButton(
-        //   buttonText: 'Vendor 1',
-        //   buttonType: ButtonType.Straw,
-        //   onPressed: () => Navigator.pushNamed(context, '/vendor'),
-        // ),
       ],
     );
   }

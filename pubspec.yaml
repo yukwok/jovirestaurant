@@ -45,7 +45,6 @@ dependencies:
   flutter_native_image: ^0.0.5+3
   date_format: ^2.0.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

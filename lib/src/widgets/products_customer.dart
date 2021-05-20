@@ -9,6 +9,7 @@ import 'package:jovirestaurant/src/models/product.dart';
 import 'package:jovirestaurant/src/styles/colors.dart';
 import 'package:jovirestaurant/src/styles/text.dart';
 import 'package:provider/provider.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 
 class ProductsCustomer extends StatelessWidget {
   final formatCurrency = NumberFormat.simpleCurrency();
@@ -66,7 +67,7 @@ class ProductsCustomer extends StatelessWidget {
                   color: AppColors.straw,
                   child: (Platform.isIOS)
                       ? Icon(
-                          IconData(0xf38b,
+                          IconData(0xF38B,
                               fontFamily: CupertinoIcons.iconFont,
                               fontPackage: CupertinoIcons.iconFontPackage),
                           color: Colors.white,
