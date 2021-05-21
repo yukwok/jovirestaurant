@@ -73,10 +73,6 @@ class VendorBloc {
 
   final validateDescription = StreamTransformer<String, String>.fromHandlers(
       handleData: (description, sink) {
-    // print('validateProductName:$productName');
-    //
-    // //no input
-
     if (description != null) {
       //correct format
       if (description.length >= 10 && description.length <= 200) {
@@ -157,7 +153,7 @@ class VendorBloc {
         changeImageUrl(imageUrl);
         _isUploading.sink.add(false);
       } else {
-        print('No path received.');
+        print('when upload vendor image, No path received.');
       }
     } else {
       print('Grant permission and try again.');
