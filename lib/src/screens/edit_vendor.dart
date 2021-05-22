@@ -6,35 +6,36 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jovirestaurant/src/blocs/auth_bloc.dart';
-import 'package:jovirestaurant/src/blocs/product_bloc.dart';
-import 'package:jovirestaurant/src/models/product.dart';
+import 'package:jovirestaurant/src/blocs/vendor_bloc.dart';
+import 'package:jovirestaurant/src/models/vendor.dart';
 import 'package:jovirestaurant/src/styles/base.dart';
 import 'package:jovirestaurant/src/styles/colors.dart';
 import 'package:jovirestaurant/src/styles/text.dart';
 import 'package:jovirestaurant/src/widgets/app_textfield.dart';
 import 'package:jovirestaurant/src/widgets/button.dart';
-import 'package:jovirestaurant/src/widgets/dropdown_button.dart';
 import 'package:jovirestaurant/src/widgets/sliver_scaffold.dart';
 import 'package:provider/provider.dart';
 
-class EditProduct extends StatefulWidget {
-  final String productId;
+class EditVendor extends StatefulWidget {
+  final String vendorId;
 
-  EditProduct({this.productId}); //Constructor
+  EditVendor({this.vendorId});
 
   @override
-  _EditProductState createState() => _EditProductState();
+  _EditVendorState createState() => _EditVendorState();
 }
 
-class _EditProductState extends State<EditProduct> {
+class _EditVendorState extends State<EditVendor> {
   StreamSubscription _savedSubscription;
   @override
   void initState() {
-    var productBloc = Provider.of<ProductBloc>(context, listen: false);
-    _savedSubscription = productBloc.productSaved.listen((saved) {
+    print('in class EDitVendor');
+
+    var vendorBloc = Provider.of<VendorBloc>(context, listen: false);
+    _savedSubscription = vendorBloc.vendorSaved.listen((saved) {
       if (saved != null && saved == true && context != null) {
         Fluttertoast.showToast(
-            msg: "Product saved.",
+            msg: "Vendor saved.",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 2,
@@ -55,13 +56,13 @@ class _EditProductState extends State<EditProduct> {
 
   @override
   Widget build(BuildContext context) {
-    var productBloc = Provider.of<ProductBloc>(context);
+    var vendorBloc = Provider.of<VendorBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
 
-    return FutureBuilder<Product>(
-      future: productBloc.fetchProduct(widget.productId),
+    return StreamBuilder<Vendor>(
+      stream: vendorBloc.vendor,
       builder: (context, snapshot) {
-        if (!snapshot.hasData && widget.productId != null) {
+        if (!snapshot.hasData && widget.vendorId != null) {
           //fetching product data
           return Scaffold(
             body: Center(
@@ -71,16 +72,15 @@ class _EditProductState extends State<EditProduct> {
           );
         }
 
-        //TODO load bloc values
-        Product existingProduct;
+        Vendor vendor = snapshot.data;
 
-        if (widget.productId != null) {
+        if (vendor != null) {
           //Edit product
-          existingProduct = snapshot.data;
-          loadValues(productBloc, existingProduct, authBloc.userId);
+
+          loadValues(vendorBloc, vendor, authBloc.userId);
         } else {
           //Add product
-          loadValues(productBloc, null, authBloc.userId);
+          loadValues(vendorBloc, null, authBloc.userId);
         }
 
         return (Platform.isIOS)
@@ -88,9 +88,9 @@ class _EditProductState extends State<EditProduct> {
                 navTitle: authBloc.userId, //name of the products?
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  vendorBloc,
                   context,
-                  existingProduct,
+                  vendor,
                 ),
                 context: context,
               )
@@ -98,9 +98,9 @@ class _EditProductState extends State<EditProduct> {
                 navTitle: authBloc.userId,
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  vendorBloc,
                   context,
-                  existingProduct,
+                  vendor,
                 ),
                 context: context,
               );
@@ -110,12 +110,11 @@ class _EditProductState extends State<EditProduct> {
 
   Widget pagebody(
     bool isIOS,
-    ProductBloc productBloc,
+    VendorBloc vendorBloc,
     BuildContext context,
-    Product existingProduct,
+    Vendor existingVendor,
   ) {
-    var items = Provider.of<List<String>>(context);
-    var pageLabel = (existingProduct != null) ? 'Edit product' : 'Add product';
+    var pageLabel = (existingVendor != null) ? 'Edit Profile' : 'Add Profile';
 
     // print(user);
     return ListView(children: <Widget>[
@@ -125,66 +124,36 @@ class _EditProductState extends State<EditProduct> {
         child: Divider(color: AppColors.darkBlue),
       ),
       StreamBuilder<String>(
-          stream: productBloc.productName,
+          stream: vendorBloc.name,
           builder: (context, snapshot) {
             return AppTextField(
               cupertinoIcon: FontAwesomeIcons.shoppingBasket,
               materialIcon: FontAwesomeIcons.shoppingBasket,
-              hintText: 'Product Name',
+              hintText: 'Vendor Name',
               isIOS: isIOS,
               errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.productName
-                  : null,
-              onChanged: productBloc.changeProductName,
+              initialText:
+                  (existingVendor != null) ? existingVendor.name : null,
+              onChanged: vendorBloc.changeName,
             );
           }),
       StreamBuilder<String>(
-          stream: productBloc.unitType,
-          builder: (context, snapshot) {
-            return AppDropdownButton(
-              items: (items != null) ? items : ['no unit type loaded.'],
-              hintText: 'Unit Type',
-              materialIcon: FontAwesomeIcons.balanceScale,
-              cupertinoIcon: FontAwesomeIcons.balanceScale,
-              value: snapshot.data, ////////////////////////////////////
-              onchanged: productBloc.changeUnitType,
-            );
-          }),
-      StreamBuilder<double>(
-          stream: productBloc.unitPrice,
-          builder: (context, snapshot) {
-            return AppTextField(
-              cupertinoIcon: FontAwesomeIcons.tag,
-              materialIcon: FontAwesomeIcons.tag,
-              hintText: 'Unit Price',
-              textInputType: TextInputType.number,
-              isIOS: isIOS,
-              errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.unitPrice.toString()
-                  : null,
-              onChanged: productBloc.changeUnitPrice,
-            );
-          }),
-      StreamBuilder<int>(
-          stream: productBloc.availableUnits,
+          stream: vendorBloc.description,
           builder: (context, snapshot) {
             return AppTextField(
               cupertinoIcon: FontAwesomeIcons.hashtag,
               materialIcon: FontAwesomeIcons.hashtag,
-              hintText: 'Available Units',
-              textInputType: TextInputType.number,
+              hintText: 'description',
+              textInputType: TextInputType.text,
               isIOS: isIOS,
               errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.availableUnits.toString()
-                  : null,
-              onChanged: productBloc.changeAvailableUnits,
+              initialText:
+                  (existingVendor != null) ? existingVendor.description : null,
+              onChanged: vendorBloc.changeDescription,
             );
           }),
       StreamBuilder<String>(
-          stream: productBloc.imageUrl,
+          stream: vendorBloc.imageUrl,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data == "")
               return Column(
@@ -194,7 +163,7 @@ class _EditProductState extends State<EditProduct> {
                       buttonType: ButtonType.Straw,
                       buttonText: 'Add Image',
                       onPressed: () {
-                        productBloc.pickImage();
+                        vendorBloc.pickImage();
                       }),
                 ],
               );
@@ -205,7 +174,7 @@ class _EditProductState extends State<EditProduct> {
                 style: TextStyle(fontSize: 6.0),
               ),
               StreamBuilder(
-                stream: productBloc.isUploading,
+                stream: vendorBloc.isUploading,
                 builder: (context, snapshot) {
                   return (!snapshot.hasData || snapshot.data == false)
                       ? Container()
@@ -223,41 +192,37 @@ class _EditProductState extends State<EditProduct> {
               AppButton(
                   buttonType: ButtonType.Straw,
                   buttonText: 'Change Image',
-                  onPressed: productBloc.pickImage)
+                  onPressed: vendorBloc.pickImage)
             ]);
           }),
       StreamBuilder<bool>(
-          stream: productBloc.isValid,
+          stream: vendorBloc.isValid,
           builder: (context, snapshot) {
             return AppButton(
               buttonType: (snapshot.data == true)
                   ? ButtonType.DarkBlue
                   : ButtonType.Disabled,
-              buttonText: 'Save Product',
-              onPressed: productBloc.saveProduct,
+              buttonText: 'Save Profile',
+              onPressed: vendorBloc.saveVendor,
             );
           }),
     ]);
   }
 
-  loadValues(ProductBloc productBloc, Product product, String venderId) {
-    productBloc.changeProduct(product);
-    productBloc.changeVendorId(venderId);
+  loadValues(VendorBloc vendorBloc, Vendor vendor, String venderId) {
+    // vendorBloc.changeVendor(vendor);
+    vendorBloc.changeVendorId(venderId);
 
-    if (product != null) {
+    if (vendor != null) {
       //Edit
-      productBloc.changeProductName(product.productName);
-      productBloc.changeUnitType(product.unitType);
-      productBloc.changeAvailableUnits(product.availableUnits.toString());
-      productBloc.changeUnitPrice(product.unitPrice.toString());
-      productBloc.changeImageUrl(product.imageUrl ?? '');
+      vendorBloc.changeName(vendor.name);
+      vendorBloc.changeDescription(vendor.description);
+      vendorBloc.changeImageUrl(vendor.imageUrl ?? '');
     } else {
-      //Add
-      productBloc.changeUnitType(null);
-      productBloc.changeProductName(null);
-      productBloc.changeAvailableUnits(null);
-      productBloc.changeUnitPrice(null);
-      productBloc.changeImageUrl('');
+      //Add new vendor information
+      vendorBloc.changeName(null);
+      vendorBloc.changeDescription(null);
+      vendorBloc.changeImageUrl('');
     }
   }
 }

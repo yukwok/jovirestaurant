@@ -2,6 +2,7 @@
 
 import 'package:jovirestaurant/src/screens/customer.dart';
 import 'package:jovirestaurant/src/screens/edit_product.dart';
+import 'package:jovirestaurant/src/screens/edit_vendor.dart';
 import 'package:jovirestaurant/src/screens/landing.dart';
 import 'package:jovirestaurant/src/screens/login.dart';
 import 'package:jovirestaurant/src/screens/signup.dart';
@@ -23,6 +24,8 @@ abstract class Routes {
         return MaterialPageRoute(builder: (context) => Vendor());
       case "/editproduct":
         return MaterialPageRoute(builder: (context) => EditProduct());
+      case "/editvendor":
+        return MaterialPageRoute(builder: (context) => EditVendor());
       default:
         var routeArray = settings.name.split('/');
         if (settings.name.contains('/editproduct/')) {
@@ -48,6 +51,8 @@ abstract class Routes {
         return CupertinoPageRoute(builder: (context) => Vendor());
       case "/editproduct":
         return CupertinoPageRoute(builder: (context) => EditProduct());
+      case "/editvendor":
+        return CupertinoPageRoute(builder: (context) => EditVendor());
 
       default:
         var routeArray = settings.name.split('/');
