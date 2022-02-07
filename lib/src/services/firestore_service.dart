@@ -112,7 +112,7 @@ class FirestoreService {
 
   Future<Vendor> fetchVendor(String vendorId) {
     return _db
-        .collection('vendors')
+        .collection('users')
         .doc(vendorId)
         .get()
         .then((snapshot) => Vendor.fromFirestore(snapshot.data()));

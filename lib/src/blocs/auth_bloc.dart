@@ -106,10 +106,14 @@ class AuthBloc {
     var firebaseUser = _auth.currentUser;
     if (firebaseUser == null) return false;
 
-    var user = await _firestoreService.fetchUser(firebaseUser.uid);
-    if (user == null) return false;
+    try {
+      var user = await _firestoreService.fetchUser(firebaseUser.uid);
+      if (user == null) return false;
+      _user.sink.add(user);
+    } catch (e) {
+      print('error in isLoggedIn() : $e');
+    }
 
-    _user.sink.add(user);
     return true;
   }
 

@@ -32,6 +32,7 @@ class _AppState extends State<App> {
     return MultiProvider(providers: [
       Provider(create: (context) => authBloc),
       Provider(create: (context) => productBloc),
+      Provider(create: (context) => customerBloc),
       Provider(create: (context) => vendorBloc),
       FutureProvider(create: (context) => authBloc.isLoggedIn()),
       StreamProvider(create: (context) => firestore.fetchUnitTypes()),

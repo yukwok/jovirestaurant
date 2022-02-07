@@ -83,20 +83,20 @@ class _EditVendorState extends State<EditVendor> {
         if (widget.vendorId != null) {
           //Edit product
           existingVendor = snapshot.data;
-          loadValues(productBloc, existingProduct, authBloc.userId);
+          loadValues(vendorBloc, existingVendor, authBloc.userId);
         } else {
           //Add product
-          loadValues(productBloc, null, authBloc.userId);
+          loadValues(vendorBloc, null, authBloc.userId);
         }
 
         return (Platform.isIOS)
             ? AppSliverScaffold.cupertinoSliverScaffold(
-                navTitle: authBloc.userId, //name of the products?
+                navTitle: authBloc.userId, //name of the vendor?
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  vendorBloc,
                   context,
-                  existingProduct,
+                  existingVendor,
                 ),
                 context: context,
               )
@@ -104,9 +104,9 @@ class _EditVendorState extends State<EditVendor> {
                 navTitle: authBloc.userId,
                 pageBody: pagebody(
                   Platform.isIOS,
-                  productBloc,
+                  vendorBloc,
                   context,
-                  existingProduct,
+                  existingVendor,
                 ),
                 context: context,
               );
@@ -116,12 +116,12 @@ class _EditVendorState extends State<EditVendor> {
 
   Widget pagebody(
     bool isIOS,
-    ProductBloc productBloc,
+    VendorBloc vendorBloc,
     BuildContext context,
-    Product existingProduct,
+    Vendor existingVendor,
   ) {
     var items = Provider.of<List<String>>(context);
-    var pageLabel = (existingProduct != null) ? 'Edit product' : 'Add product';
+    var pageLabel = (existingVendor != null) ? 'Edit vendor' : 'Add vendor';
 
     // print(user);
     return ListView(children: <Widget>[
@@ -131,66 +131,35 @@ class _EditVendorState extends State<EditVendor> {
         child: Divider(color: AppColors.darkBlue),
       ),
       StreamBuilder<String>(
-          stream: productBloc.productName,
+          stream: vendorBloc.name,
           builder: (context, snapshot) {
             return AppTextField(
               cupertinoIcon: FontAwesomeIcons.shoppingBasket,
               materialIcon: FontAwesomeIcons.shoppingBasket,
-              hintText: 'Product Name',
+              hintText: 'Vendor Name',
               isIOS: isIOS,
               errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.productName
-                  : null,
-              onChanged: productBloc.changeProductName,
+              initialText:
+                  (existingVendor != null) ? existingVendor.name : null,
+              onChanged: vendorBloc.changeName,
             );
           }),
       StreamBuilder<String>(
-          stream: productBloc.unitType,
-          builder: (context, snapshot) {
-            return AppDropdownButton(
-              items: (items != null) ? items : ['no unit type loaded.'],
-              hintText: 'Unit Type',
-              materialIcon: FontAwesomeIcons.balanceScale,
-              cupertinoIcon: FontAwesomeIcons.balanceScale,
-              value: snapshot.data, ////////////////////////////////////
-              onchanged: productBloc.changeUnitType,
-            );
-          }),
-      StreamBuilder<double>(
-          stream: productBloc.unitPrice,
+          stream: vendorBloc.description,
           builder: (context, snapshot) {
             return AppTextField(
-              cupertinoIcon: FontAwesomeIcons.tag,
-              materialIcon: FontAwesomeIcons.tag,
-              hintText: 'Unit Price',
-              textInputType: TextInputType.number,
+              cupertinoIcon: FontAwesomeIcons.shoppingBasket,
+              materialIcon: FontAwesomeIcons.shoppingBasket,
+              hintText: 'type description',
               isIOS: isIOS,
               errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.unitPrice.toString()
-                  : null,
-              onChanged: productBloc.changeUnitPrice,
-            );
-          }),
-      StreamBuilder<int>(
-          stream: productBloc.availableUnits,
-          builder: (context, snapshot) {
-            return AppTextField(
-              cupertinoIcon: FontAwesomeIcons.hashtag,
-              materialIcon: FontAwesomeIcons.hashtag,
-              hintText: 'Available Units',
-              textInputType: TextInputType.number,
-              isIOS: isIOS,
-              errorText: snapshot.error,
-              initialText: (existingProduct != null)
-                  ? existingProduct.availableUnits.toString()
-                  : null,
-              onChanged: productBloc.changeAvailableUnits,
+              initialText:
+                  (existingVendor != null) ? existingVendor.description : null,
+              onChanged: vendorBloc.changeDescription,
             );
           }),
       StreamBuilder<String>(
-          stream: productBloc.imageUrl,
+          stream: vendorBloc.imageUrl,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data == "")
               return Column(
@@ -200,7 +169,7 @@ class _EditVendorState extends State<EditVendor> {
                       buttonType: ButtonType.Straw,
                       buttonText: 'Add Image',
                       onPressed: () {
-                        productBloc.pickImage();
+                        vendorBloc.pickImage();
                       }),
                 ],
               );
@@ -211,7 +180,7 @@ class _EditVendorState extends State<EditVendor> {
                 style: TextStyle(fontSize: 6.0),
               ),
               StreamBuilder(
-                stream: productBloc.isUploading,
+                stream: vendorBloc.isUploading,
                 builder: (context, snapshot) {
                   return (!snapshot.hasData || snapshot.data == false)
                       ? Container()
@@ -229,41 +198,50 @@ class _EditVendorState extends State<EditVendor> {
               AppButton(
                   buttonType: ButtonType.Straw,
                   buttonText: 'Change Image',
-                  onPressed: productBloc.pickImage)
+                  onPressed: vendorBloc.pickImage)
             ]);
           }),
       StreamBuilder<bool>(
-          stream: productBloc.isValid,
+          stream: vendorBloc.vendorSaved,
           builder: (context, snapshot) {
             return AppButton(
               buttonType: (snapshot.data == true)
                   ? ButtonType.DarkBlue
                   : ButtonType.Disabled,
-              buttonText: 'Save Product',
-              onPressed: productBloc.saveProduct,
+              buttonText: 'Save Vendor',
+              onPressed: vendorBloc.saveVendor,
             );
           }),
     ]);
   }
 
-  loadValues(ProductBloc productBloc, Product product, String venderId) {
-    productBloc.changeProduct(product);
-    productBloc.changeVendorId(venderId);
+  // final _db = FirestoreService();
+  // final _name = BehaviorSubject<String>();
+  // final _description = BehaviorSubject<String>();
+  // final _imageUrl = BehaviorSubject<String>();
+  // final _vendorId = BehaviorSubject<String>();
+  // final _vendorSaved = PublishSubject<bool>();
+  // final _vendor = BehaviorSubject<Vendor>();
+  // final _isUploading = BehaviorSubject<bool>();
 
-    if (product != null) {
+  loadValues(VendorBloc vendorBloc, Vendor vendor, String venderId) {
+    vendorBloc.changeVendor(vendor);
+    // vendorBloc.change(venderId);
+
+    if (vendor != null) {
       //Edit
-      productBloc.changeProductName(product.productName);
-      productBloc.changeUnitType(product.unitType);
-      productBloc.changeAvailableUnits(product.availableUnits.toString());
-      productBloc.changeUnitPrice(product.unitPrice.toString());
-      productBloc.changeImageUrl(product.imageUrl ?? '');
+      // vendorBloc.changeProductName(product.productName);
+      // vendorBloc.changeUnitType(vendor.unitType);
+      // vendorBloc.changeAvailableUnits(vendor.availableUnits.toString());
+      // vendorBloc.changeUnitPrice(vendor.unitPrice.toString());
+      // vendorBloc.changeImageUrl(vendor.imageUrl ?? '');
     } else {
       //Add
-      productBloc.changeUnitType(null);
-      productBloc.changeProductName(null);
-      productBloc.changeAvailableUnits(null);
-      productBloc.changeUnitPrice(null);
-      productBloc.changeImageUrl('');
+      // productBloc.changeUnitType(null);
+      // productBloc.changeProductName(null);
+      // productBloc.changeAvailableUnits(null);
+      // productBloc.changeUnitPrice(null);
+      // productBloc.changeImageUrl('');
     }
   }
 }
